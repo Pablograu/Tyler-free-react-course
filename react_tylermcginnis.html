@@ -103,6 +103,7 @@
           })
         }
 
+        // handleToggleFriend toggles the state of the friend
         handleToggleFriend = (friend) => {
           console.log(friend.name, friend.status, 'toggled')
           this.setState((currentState) => {
@@ -113,6 +114,22 @@
             }
           })
         }
+
+        //tyler's solution for handleToggleFriend: notice he passes 'name' and not 'friend'
+        // handleToggleFriend = (name) => {
+        //   this.setState((currentState) => {
+        //     const friend = currentState.friends.find((friend) => friend.name === name)
+            
+        //     return{
+        //       friends: currentState.friends.filter((friend) => friend.name !== name)
+        //       .concat([{
+        //         name,
+        //         status: !friend.status
+        //       }])
+        //     }
+        //   })
+          
+        // }
 
         // handleActivateFriend = (name) => {
         //   console.log(name, 'activado')
