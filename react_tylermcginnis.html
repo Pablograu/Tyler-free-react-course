@@ -14,8 +14,31 @@
   </head>
   <body>
     <div id="app"></div>
-    <script type="text/babel">
 
+    <script>
+      //this is a fake DB
+      window.API = {
+        fetchFriends(){
+          console.log('hola')
+          return new Promise((res, rej) => {
+            friends = [
+              {name: 'alex',
+              status: true,
+              },
+              {name: 'verena',
+              status: true,
+              },
+              {name: 'yera',
+              status: false,
+              }
+            ]
+            setTimeout(() => res(friends), 2000)
+          })
+        }
+      }
+    </script>
+
+    <script type="text/babel">
       function ActiveFriendsList(props) {
         return (
           <ul>
@@ -47,24 +70,30 @@
         constructor(props) {
           super(props);
           this.state = {
-            friends: [
-              {name: 'alex',
-              status: true,
-              },
-              {name: 'verena',
-              status: true,
-              },
-              {name: 'yera',
-              status: false,
-              }
-            ],
-            // inactiveFriends: ['pedro', 'miguel', 'josemi'],
+            friends: [],
             input:'',
+            // inactiveFriends: ['pedro', 'miguel', 'josemi'],
           }
           //tyler says that we need to bind because react doesnt know what da fuck youre talking about 'this' when you call the function 
           //so we need to defined as below so every time you call it, 'this' references the right context. We dont need to bind because im using 
           // this.handleRemoveFriend = this.handleRemoveFriend.bind(this)
+        console.log('--constructor--')
         }
+
+        componentDidMount(){
+          console.log('--component did mount--')
+          API.fetchFriends()
+          .then((friends) => {
+            this.setState({
+              friends
+            })
+          })
+        }
+
+        componentDidUpdate(){
+          console.log('--component updated--')
+        }
+
         clearFriends = () => {
           this.setState((currentState) => {
             return {
@@ -72,8 +101,8 @@
               // inactiveFriends: []
             }
           })
-          
         }
+
         handleAddFriend = () => {
           this.setState((currentState) => {
             return {
@@ -152,6 +181,7 @@
         // }
 
         render() {
+          console.log('--render--')
           return (
             <div>
               <input
