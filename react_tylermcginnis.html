@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>First React App</title>
+    <script
+      crossorigin
+      src="https://unpkg.com/react@16/umd/react.development.js"
+    ></script>
+    <script
+      crossorigin
+      src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"
+    ></script>
+    <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+  </head>
+  <body>
+    <div id="app"></div>
+    <script type="text/babel">
+
+      function ActiveFriendsList(props) {
+        return (
+          <ul>
+            {props.list.map(friend => (
+              <li key={friend.name}>
+                <span>{friend.name}</span>
+                <button onClick={() => props.onRemoveFriend(friend.name)}>Remove</button>
+                <button onClick={() => props.onToggleFriend(friend)}>Deactivate</button>
+              </li>
+            ))}
+          </ul>
+        );
+      }
+
+      function InactiveFriendsList(props) {
+        return (
+          <ul>
+            {props.list.map(friend => (
+              <li key={friend.name}>
+                <span>{friend.name}</span>
+                <button onClick={() => props.onToggleFriend(friend)}>Activate</button>
+              </li>
+            ))}
+          </ul>
+        );
+      }
+
+      class App extends React.Component {
+        constructor(props) {
+          super(props);
+          this.state = {
+            friends: [
+              {name: 'alex',
+              status: true,
+              },
+              {name: 'verena',
+              status: true,
+              },
+              {name: 'yera',
+              status: false,
+              }
+            ],
+            // inactiveFriends: ['pedro', 'miguel', 'josemi'],
+            input:'',
+          }
+          //tyler says that we need to bind because react doesnt know what da fuck youre talking about 'this' when you call the function 
+          //so we need to defined as below so every time you call it, 'this' references the right context. We dont need to bind because im using 
+          // this.handleRemoveFriend = this.handleRemoveFriend.bind(this)
+        }
+        clearFriends = () => {
+          this.setState((currentState) => {
+            return {
+              friends: [],
+              // inactiveFriends: []
+            }
+          })
+          
+        }
+        handleAddFriend = () => {
+          this.setState((currentState) => {
+            return {
+              friends: currentState.friends.concat([{
+                name: currentState.input,
+                status: true,
+              }]),
+              input:'',
+            }
+          })
+        }
+
+        handleRemoveFriend = (name) => {
+          this.setState((currentState) => {
+            console.log(name, 'removed')
+            return{
+              //take the friends and keep all those whose name is not the name we passed in
+              friends: currentState.friends.filter((friend) => friend.name !== name)
+            }
+          })
+        }
+
+        updateInput = (e) => {
+          const value = e.target.value
+          this.setState({
+            input: value
+          })
+        }
+
+        handleToggleFriend = (friend) => {
+          console.log(friend.name, friend.status, 'toggled')
+          this.setState((currentState) => {
+            friend.status = !friend.status
+            //you can toggle the status but if you dont return the new state, it wont render the new friends status
+            return{
+              currentState
+            }
+          })
+        }
+
+        // handleActivateFriend = (name) => {
+        //   console.log(name, 'activado')
+        //   this.setState((currentState) => {
+        //   return {
+        //     inactiveFriends: currentState.inactiveFriends.filter((friend) => friend !== name),
+        //     friends: currentState.friends.concat(name),
+        //     }
+        //   })
+        // }
+
+        // handleDeactivateFriend = (name) => {
+        //   console.log(name, 'desactivado')
+        //   this.setState((currentState) => {
+        //   return {
+        //     friends: currentState.friends.filter((friend) => friend !== name),
+        //     inactiveFriends: currentState.inactiveFriends.concat(name)
+        //     }
+        //   })
+        // }
+
+        render() {
+          return (
+            <div>
+              <input
+                type="text"
+                placeholder="add friend name"
+                value={this.state.input} //value is whatever this.state.input is
+                onChange={this.updateInput}
+              />
+              <button onClick={this.handleAddFriend}>Add</button>
+              <div>
+                <button onClick={this.clearFriends}>Clear Friends</button>
+              </div>
+              <h1>Active Friends</h1>
+              <ActiveFriendsList 
+              list={this.state.friends.filter((friend) => friend.status === true)} 
+              onRemoveFriend={this.handleRemoveFriend}
+              onToggleFriend={this.handleToggleFriend}
+              />
+              <h2>Inactive Friends</h2>
+              <InactiveFriendsList 
+              list={this.state.friends.filter((friend) => friend.status === false)}
+              onToggleFriend={this.handleToggleFriend}/>
+            </div>
+          );
+        }
+      }
+      ReactDOM.render(<App />, 
+      document.getElementById("app"));
+    </script>
+
+  </body>
+</html>
